@@ -1,0 +1,18 @@
+doctrine_migrations:
+    migrations_paths:
+        'E32CM\Migrations': '%kernel.project_dir%/database/doctrineMigrations'
+    enable_profiler: '%kernel.debug%'
+
+    storage:
+        table_storage:
+            table_name: doctrine_migration_versions
+            version_column_name: version
+            version_column_length: 1024
+            executed_at_column_name: executed_at
+            execution_time_column_name: execution_time
+
+    all_or_nothing: true
+    check_database_platform: true
+    organize_migrations: "BY_YEAR_AND_MONTH"
+
+

@@ -1,0 +1,4 @@
+createNewThing:
+    path: /api1.0/createNewThing
+    controller: E32CM\Things\Controllers\CreateNewThing::run
+    methods: POST
