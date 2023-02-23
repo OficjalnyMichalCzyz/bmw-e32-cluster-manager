@@ -5,7 +5,7 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "require": {
-        "php": ">=8.0",
+        "php": ">=7.4",
         "ext-ctype": "*",
         "ext-iconv": "*",
         "ext-json": "*",
@@ -17,6 +17,7 @@
         "doctrine/orm": "^2.9",
         "guzzlehttp/guzzle": "^7.3",
         "nelmio/cors-bundle": "^2.1",
+        "phpclasses/php_serial": ">=1.5",
         "symfony/console": "5.4.*",
         "symfony/dotenv": "5.4.*",
         "symfony/flex": "^1.3.1",
@@ -24,11 +25,19 @@
         "symfony/http-client": "5.4.*",
         "symfony/proxy-manager-bridge": "5.4.*",
         "symfony/runtime": "5.4.*",
-        "symfony/yaml": "5.4.*"
+        "symfony/yaml": "5.4.*",
+        "team-reflex/discord-php": "^7.3"
     },
+    "repositories":
+    [
+        {
+            "type": "composer",
+            "url": "https:\/\/www.phpclasses.org\/"
+        }
+    ],
     "config": {
         "platform": {
-            "php": "8.0"
+            "php": "7.4"
         },
         "optimize-autoloader": true,
         "preferred-install": {

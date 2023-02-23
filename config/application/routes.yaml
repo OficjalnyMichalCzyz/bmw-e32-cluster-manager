@@ -1,4 +1,52 @@
-createNewThing:
-    path: /api1.0/createNewThing
-    controller: E32CM\Things\Controllers\CreateNewThing::run
-    methods: POST
+
+#=======================================================================#
+#=========================  ButtonMapping  =============================#
+#=======================================================================#
+
+getButtonMapping:
+    path: /api/v1/getButtonMapping
+    controller: E32CM\Api\ButtonMapping\Controllers\GetButtonMapping::run
+    methods: GET
+
+getPossibleInputsAndCommands:
+    path: /api/v1/getPossibleInputsAndCommands
+    controller: E32CM\Api\ButtonMapping\Controllers\GetPossibleInputsAndCommands::run
+    methods: GET
+
+alterButtonMapping:
+    path: /api/v1/alterButtonMapping
+    controller: E32CM\Api\ButtonMapping\Controllers\AlterButtonMapping::run
+    methods: PUT
+
+#=======================================================================#
+#=========================  ChannelWhitelist  ==========================#
+#=======================================================================#
+
+getChannelWhitelist:
+    path: /api/v1/getChannelWhitelist
+    controller: E32CM\Api\DiscordChannelWhitelist\Controllers\GetChannelWhitelist::run
+    methods: GET
+
+changeChannelWhitelist:
+    path: /api/v1/changeChannelWhitelist
+    controller: E32CM\Api\DiscordChannelWhitelist\Controllers\ChangeChannelWhitelist::run
+    methods: PUT
+
+#=======================================================================#
+#===========================  ScrollingSpeed  ==========================#
+#=======================================================================#
+
+getScrollSpeed:
+    path: /api/v1/getScrollSpeed
+    controller: E32CM\Api\DiscordScrollSpeed\Controllers\GetScrollSpeed::run
+    methods: GET
+
+getPossibleScrollSpeeds:
+    path: /api/v1/getPossibleScrollSpeeds
+    controller: E32CM\Api\DiscordScrollSpeed\Controllers\GetPossibleScrollSpeeds::run
+    methods: GET
+
+changeScrollSpeed:
+    path: /api/v1/changeScrollSpeed
+    controller: E32CM\Api\DiscordScrollSpeed\Controllers\ChangeScrollSpeed::run
+    methods: PUT

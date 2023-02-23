@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace E32CM;
 
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
@@ -7,6 +9,22 @@ use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Kernel as BaseKernel;
 use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
+
+function log(string $message): void
+{
+    echo($message . PHP_EOL);
+}
+
+function DEBUG_logChar(string $message, ?int $position): void
+{
+    if (is_null($position)) {
+        echo $message;
+        return;
+    }
+
+    echo(mb_substr($message, $position, 1, 'UTF-8'));
+}
+
 class Kernel extends BaseKernel
 {
     const CONFIG_EXTS = '.{php,xml,yaml,yml}';

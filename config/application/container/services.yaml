@@ -8,4 +8,115 @@ services:
     E32CM\:
         resource: '../../../src/'
 
-    GuzzleHttp\Client: ~
+    E32CM\ClusterManager\Main\ClusterApplications\Discord\Configuration\Repository\RepositoryBasedOnMysql:
+        public: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+
+    E32CM\ClusterManager\Main\ClusterApplications\Discord\Configuration\Repository\Repository:
+        '@E32CM\ClusterManager\Main\ClusterApplications\Discord\Configuration\Repository\RepositoryBasedOnMysql'
+
+    E32CM\ClusterManager\Main\ClusterApplications\Discord\DiscordListener\Message\Consumer\MessageConsumerBasedOnMysql:
+        public: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+
+    E32CM\ClusterManager\Main\ClusterApplications\Discord\DiscordListener\Message\Consumer\MessageConsumer:
+        '@E32CM\ClusterManager\Main\ClusterApplications\Discord\DiscordListener\Message\Consumer\MessageConsumerBasedOnMysql'
+
+    E32CM\ClusterManager\Main\ClusterApplications\Discord\DiscordListener\Message\Queue\MessageQueueBasedOnMysql:
+        public: true
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+
+    E32CM\ClusterManager\Main\ClusterApplications\Discord\DiscordListener\Message\Queue\MessageQueue:
+        '@E32CM\ClusterManager\Main\ClusterApplications\Discord\DiscordListener\Message\Queue\MessageQueueBasedOnMysql'
+
+    GuzzleHttp\Client:
+        ~
+
+#=======================================================================#
+#============================  Commands  ===============================#
+#=======================================================================#
+
+    E32CM\ClusterManager\Command\TestCommand:
+        #        arguments:
+        #            $entityManager: '@doctrine.orm.entity_manager'
+        tags:
+            - { name: 'console.command', command: 'app:testCommand' }
+
+    E32CM\ClusterManager\Command\DiscordListener\DiscordListenerCommand:
+        tags:
+            - { name: 'console.command', command: 'app:discordListener' }
+
+    E32CM\ClusterManager\Command\ClusterManagerMain:
+        tags:
+            - { name: 'console.command', command: 'app:run' }
+
+#=======================================================================#
+#=======================  ClusterApplications  =========================#
+#=======================================================================#
+
+    E32CM\ClusterManager\Main\Main:
+        ~
+
+#=======================================================================#
+#===============================  Input  ===============================#
+#=======================================================================#
+
+    E32CM\ClusterManager\Input\Input:
+        ~
+
+    #================== Drivers ==================#
+
+    E32CM\ClusterManager\Input\Drivers\InputDriver:
+        '@E32CM\ClusterManager\Input\Drivers\FileBasedInputDriver'
+
+    E32CM\ClusterManager\Input\Drivers\BMWStalksAndIBusSteeringWheelButtonsBasedInputDriver:
+        ~
+
+    E32CM\ClusterManager\Input\Drivers\NullInputDriver:
+        ~
+
+    E32CM\ClusterManager\Input\Drivers\FileBasedInputDriver:
+        ~
+
+    #================== Mapping ==================#
+
+    E32CM\ClusterManager\Input\Mapper\InputMapper:
+        ~
+
+    E32CM\ClusterManager\Input\Mapper\SavedMappingsProvider\MappingProvider:
+        '@E32CM\ClusterManager\Input\Mapper\SavedMappingsProvider\FileBasedMappingProvider'
+
+    E32CM\ClusterManager\Input\Mapper\SavedMappingsProvider\FileBasedMappingProvider:
+        ~
+
+    E32CM\ClusterManager\Input\Mapper\SavedMappingsProvider\MappingProviderBasedOnMysql:
+        arguments:
+            $entityManager: '@doctrine.orm.entity_manager'
+
+#=======================================================================#
+#==============================  Output  ===============================#
+#=======================================================================#
+
+    E32CM\ClusterManager\Output\Output:
+        ~
+
+    E32CM\ClusterManager\Output\Drivers\OutputDriver: '@E32CM\ClusterManager\Output\Drivers\FileDriver'
+
+    E32CM\ClusterManager\Output\Drivers\NullDriver:
+        ~
+
+    E32CM\ClusterManager\Output\Drivers\FileDriver:
+        ~
+
+    E32CM\ClusterManager\Output\Drivers\SimpleConsoleDriver:
+        ~
+
+    E32CM\ClusterManager\Output\Drivers\SymfonyConsoleDriver:
+        ~
+
+#=======================================================================#
+#================================  API  ================================#
+#=======================================================================#

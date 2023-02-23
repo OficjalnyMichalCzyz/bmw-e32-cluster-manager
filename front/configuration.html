@@ -1,0 +1,603 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <title>Cluster Manager</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            crossorigin="anonymous"></script>
+    <style>
+        @media (min-width: 768px) {
+        }
+    </style>
+
+    <link href="cluster.css" rel="stylesheet">
+
+    <script src="wizardRedirect.js"></script>
+
+</head>
+
+<script>
+    fetch('http://localhost/api/v1/getButtonMapping')
+        .then(response => {
+            if (response.status === 404) {
+                window.location.replace('wizard.html#');
+            } else if (response.status === 200) {
+                response.json().then(data => {
+                    Object.entries(data).forEach(([key, value]) => {
+                        // console.log('bind-' + key)
+                        let bind;
+                        if (value == null) {
+                            bind = "---"
+                        } else {
+                            bind = value.replaceAll('_', ' ')
+                        }
+                        document.getElementById('bind-' + key).innerText = bind;
+                    });
+                });
+            }
+        })
+        .catch(error => console.error(error));
+
+    function changeMappingThenReload() {
+        fetch('http://localhost/api/v1/alterButtonMapping', {
+            method: 'PUT',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(
+                {
+                    "LEFT": getMapOrGetNull("bind-LEFT"),
+                    "RIGHT": getMapOrGetNull("bind-RIGHT"),
+                    "UP": getMapOrGetNull("bind-UP"),
+                    "DOWN": getMapOrGetNull("bind-DOWN"),
+                    "OK": getMapOrGetNull("bind-OK"),
+                    "BACK": getMapOrGetNull("bind-BACK"),
+                    "INVOKE": getMapOrGetNull("bind-INVOKE"),
+                    "HOME": getMapOrGetNull("bind-HOME"),
+                }
+            )
+        })
+            .then(response => console.log(response.status))
+    }
+
+    function changeSpeedThenReload() {
+        const selectedSpeed = document.getElementById("scrollingSpeedDiv").innerText
+        console.log(selectedSpeed);
+        fetch('http://localhost/api/v1/changeScrollSpeed', {
+            method: 'PUT',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(
+                [selectedSpeed.toUpperCase().replaceAll(' ', '_')+"_SCROLLING"]
+            )
+        })
+            .then(response => console.log(response.status))
+    }
+
+    fetch('http://localhost/api/v1/getChannelWhitelist')
+        .then(response => {
+            if (response.status === 404) {
+
+            } else if (response.status === 200) {
+                response.json().then(data => {
+                    console.log(data.join(','))
+                    document.getElementById("channelIds").innerText = data.join(',');
+                });
+            }
+        })
+        .catch(error => console.error(error));
+
+    fetch('http://localhost/api/v1/getScrollSpeed')
+        .then(response => {
+            if (response.status === 404) {
+
+            } else if (response.status === 200) {
+                response.json().then(data => {
+                    console.log(data['scrollingSpeed'])
+                    var scrollSpeed = data['scrollingSpeed'].toLowerCase();
+                    scrollSpeed = scrollSpeed.charAt(0).toUpperCase() + scrollSpeed.slice(1);
+                    scrollSpeed = scrollSpeed.substring(0,scrollSpeed.length-10);
+                    scrollSpeed = scrollSpeed.replaceAll('_', ' ')
+                    document.getElementById("scrollingSpeedDiv").innerText = scrollSpeed
+                });
+            }
+        })
+        .catch(error => console.error(error));
+
+    function changeChannelWhitelist(channelList) {
+        fetch('http://localhost/api/v1/changeChannelWhitelist', {
+            method: 'PUT',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(
+                channelList
+            )
+        })
+            .then(response => console.log(response.status))
+    }
+
+    function getMapOrGetNull(divId) {
+        let div = document.getElementById(divId).innerText;
+        if (div === "---") {
+            return null;
+        }
+        return div.toString().replaceAll(' ', '_');
+    }
+
+    function selectOptionInDropdown(option, motherDivId) {
+        document.getElementById(motherDivId).innerText = option.innerText;
+    }
+
+    function isValidChannelList() {
+        let channelList = document.getElementById("channelIds").value;
+        const isValid = /^[0-9,.]*$/.test(channelList);
+        if (isValid) {
+            document.getElementById("channelListButton").style.color = '#ff9000';
+            changeChannelWhitelist(channelList.split(','))
+        } else {
+            document.getElementById("channelListButton").style.color = 'red';
+        }
+    }
+
+</script>
+
+<body>
+
+<div class="container py-3">
+    <header>
+        <div class="d-flex flex-column flex-md-row align-items-center pb-3 mb-4 border-bottom">
+            <a href="/" class="d-flex align-items-center text-dark text-decoration-none">
+                <img src="cluster.png" width="200" height="80" alt="e32 cluster icon"/>
+            </a>
+
+            <span class="fs-4">Cluster Manager</span>
+
+            <nav class="d-inline-flex mt-2 mt-md-0 ms-md-auto">
+                <a class="me-3 py-2 text-decoration-none" href="#">Overview</a>
+                <a class="me-3 py-2 text-decoration-none" href="#">Configuration</a>
+                <a class="py-2 text-decoration-none" onclick="location.href = 'tools.html';">Tools</a>
+            </nav>
+        </div>
+
+        <div class="pricing-header p-3 pb-md-4 mx-auto text-center">
+            <h1 class="display-4 fw-normal">Configuration</h1>
+            <p class="fs-5">Configure ClusterManager to Your needs.</p>
+        </div>
+    </header>
+
+    <main>
+        <div class="row row-cols-1 row-cols-md-3 mb-3 text-center">
+            <div class="col">
+                <div class="card mb-4 rounded-3 shadow-sm card-background-blackish">
+                    <div class="card-header py-3">
+                        <h4 class="my-0 fw-normal">Button mapping</h4>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mt-3 mb-4">
+                            <form>
+                                <li>LEFT
+                                    <div class="btn-group">
+                                        <button type="button" id="bind-LEFT"
+                                                class="btn app-select-dropbox dropdown-toggle"
+                                                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            ---
+                                        </button>
+                                        <div class="dropdown-menu">
+                                            <a class="dropdown-item"
+                                               onclick="selectOptionInDropdown(this, 'bind-LEFT')">RIGHT
+                                                BUTTON</a>
+                                            <a class="dropdown-item"
+                                               onclick="selectOptionInDropdown(this, 'bind-LEFT')">LEFT
+                                                BUTTON</a>
+                                            <a class="dropdown-item"
+                                               onclick="selectOptionInDropdown(this, 'bind-LEFT')">MINUS
+                                                BUTTON</a>
+                                            <a class="dropdown-item"
+                                               onclick="selectOptionInDropdown(this, 'bind-LEFT')">PLUS
+                                                BUTTON</a>
+                                            <a class="dropdown-item"
+                                               onclick="selectOptionInDropdown(this, 'bind-LEFT')">IO
+                                                BUTTON</a>
+                                            <a class="dropdown-item"
+                                               onclick="selectOptionInDropdown(this, 'bind-LEFT')">TELEPHONE
+                                                BUTTON</a>
+                                            <a class="dropdown-item"
+                                               onclick="selectOptionInDropdown(this, 'bind-LEFT')">BC
+                                                STALK BUTTON</a>
+                                            <a class="dropdown-item"
+                                               onclick="selectOptionInDropdown(this, 'bind-LEFT')">TELEPHONE
+                                                STALK BUTTON</a>
+                                            <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item"
+                                               onclick="selectOptionInDropdown(this, 'bind-LEFT')">---</a>
+                                        </div>
+                                    </div>
+                                </li>
+
+                                <li>RIGHT
+                                    <div class="btn-group">
+                                        <button type="button" id="bind-RIGHT"
+                                                class="btn app-select-dropbox dropdown-toggle"
+                                                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            ---
+                                        </button>
+                                        <div class="dropdown-menu">
+                                            <a class="dropdown-item"
+                                               onclick="selectOptionInDropdown(this, 'bind-RIGHT')">RIGHT
+                                                BUTTON</a>
+                                            <a class="dropdown-item"
+                                               onclick="selectOptionInDropdown(this, 'bind-RIGHT')">LEFT
+                                                BUTTON</a>
+                                            <a class="dropdown-item"
+                                               onclick="selectOptionInDropdown(this, 'bind-RIGHT')">MINUS
+                                                BUTTON</a>
+                                            <a class="dropdown-item"
+                                               onclick="selectOptionInDropdown(this, 'bind-RIGHT')">PLUS
+                                                BUTTON</a>
+                                            <a class="dropdown-item"
+                                               onclick="selectOptionInDropdown(this, 'bind-RIGHT')">IO
+                                                BUTTON</a>
+                                            <a class="dropdown-item"
+                                               onclick="selectOptionInDropdown(this, 'bind-RIGHT')">TELEPHONE
+                                                BUTTON</a>
+                                            <a class="dropdown-item"
+                                               onclick="selectOptionInDropdown(this, 'bind-RIGHT')">BC
+                                                STALK BUTTON</a>
+                                            <a class="dropdown-item"
+                                               onclick="selectOptionInDropdown(this, 'bind-RIGHT')">TELEPHONE
+                                                STALK BUTTON</a>
+                                            <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item"
+                                               onclick="selectOptionInDropdown(this, 'bind-RIGHT')">---</a>
+                                        </div>
+                                    </div>
+                                </li>
+
+                                <li>UP
+                                    <div class="btn-group">
+                                        <button type="button" id="bind-UP"
+                                                class="btn app-select-dropbox dropdown-toggle"
+                                                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            ---
+                                        </button>
+                                        <div class="dropdown-menu">
+                                            <a class="dropdown-item" onclick="selectOptionInDropdown(this, 'bind-UP')">RIGHT
+                                                BUTTON</a>
+                                            <a class="dropdown-item" onclick="selectOptionInDropdown(this, 'bind-UP')">LEFT
+                                                BUTTON</a>
+                                            <a class="dropdown-item" onclick="selectOptionInDropdown(this, 'bind-UP')">MINUS
+                                                BUTTON</a>
+                                            <a class="dropdown-item" onclick="selectOptionInDropdown(this, 'bind-UP')">PLUS
+                                                BUTTON</a>
+                                            <a class="dropdown-item" onclick="selectOptionInDropdown(this, 'bind-UP')">IO
+                                                BUTTON</a>
+                                            <a class="dropdown-item" onclick="selectOptionInDropdown(this, 'bind-UP')">TELEPHONE
+                                                BUTTON</a>
+                                            <a class="dropdown-item" onclick="selectOptionInDropdown(this, 'bind-UP')">BC
+                                                STALK BUTTON</a>
+                                            <a class="dropdown-item" onclick="selectOptionInDropdown(this, 'bind-UP')">TELEPHONE
+                                                STALK BUTTON</a>
+                                            <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item"
+                                               onclick="selectOptionInDropdown(this, 'bind-UP')">---</a>
+                                        </div>
+                                    </div>
+                                </li>
+
+                                <li>DOWN
+                                    <div class="btn-group">
+                                        <button type="button" id="bind-DOWN"
+                                                class="btn app-select-dropbox dropdown-toggle"
+                                                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            ---
+                                        </button>
+                                        <div class="dropdown-menu">
+                                            <a class="dropdown-item"
+                                               onclick="selectOptionInDropdown(this, 'bind-DOWN')">RIGHT
+                                                BUTTON</a>
+                                            <a class="dropdown-item"
+                                               onclick="selectOptionInDropdown(this, 'bind-DOWN')">LEFT
+                                                BUTTON</a>
+                                            <a class="dropdown-item"
+                                               onclick="selectOptionInDropdown(this, 'bind-DOWN')">MINUS
+                                                BUTTON</a>
+                                            <a class="dropdown-item"
+                                               onclick="selectOptionInDropdown(this, 'bind-DOWN')">PLUS
+                                                BUTTON</a>
+                                            <a class="dropdown-item"
+                                               onclick="selectOptionInDropdown(this, 'bind-DOWN')">IO
+                                                BUTTON</a>
+                                            <a class="dropdown-item"
+                                               onclick="selectOptionInDropdown(this, 'bind-DOWN')">TELEPHONE
+                                                BUTTON</a>
+                                            <a class="dropdown-item"
+                                               onclick="selectOptionInDropdown(this, 'bind-DOWN')">BC
+                                                STALK BUTTON</a>
+                                            <a class="dropdown-item"
+                                               onclick="selectOptionInDropdown(this, 'bind-DOWN')">TELEPHONE
+                                                STALK BUTTON</a>
+                                            <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item"
+                                               onclick="selectOptionInDropdown(this, 'bind-DOWN')">---</a>
+                                        </div>
+                                    </div>
+                                </li>
+
+                                <li>OK
+                                    <div class="btn-group">
+                                        <button type="button" id="bind-OK"
+                                                class="btn app-select-dropbox dropdown-toggle"
+                                                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            ---
+                                        </button>
+                                        <div class="dropdown-menu">
+                                            <a class="dropdown-item" onclick="selectOptionInDropdown(this, 'bind-OK')">RIGHT
+                                                BUTTON</a>
+                                            <a class="dropdown-item" onclick="selectOptionInDropdown(this, 'bind-OK')">LEFT
+                                                BUTTON</a>
+                                            <a class="dropdown-item" onclick="selectOptionInDropdown(this, 'bind-OK')">MINUS
+                                                BUTTON</a>
+                                            <a class="dropdown-item" onclick="selectOptionInDropdown(this, 'bind-OK')">PLUS
+                                                BUTTON</a>
+                                            <a class="dropdown-item" onclick="selectOptionInDropdown(this, 'bind-OK')">IO
+                                                BUTTON</a>
+                                            <a class="dropdown-item" onclick="selectOptionInDropdown(this, 'bind-OK')">TELEPHONE
+                                                BUTTON</a>
+                                            <a class="dropdown-item" onclick="selectOptionInDropdown(this, 'bind-OK')">BC
+                                                STALK BUTTON</a>
+                                            <a class="dropdown-item" onclick="selectOptionInDropdown(this, 'bind-OK')">TELEPHONE
+                                                STALK BUTTON</a>
+                                            <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item"
+                                               onclick="selectOptionInDropdown(this, 'bind-OK')">---</a>
+                                        </div>
+                                    </div>
+                                </li>
+
+                                <li>HOME
+                                    <div class="btn-group">
+                                        <button type="button" id="bind-HOME"
+                                                class="btn app-select-dropbox dropdown-toggle"
+                                                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            ---
+                                        </button>
+                                        <div class="dropdown-menu">
+                                            <a class="dropdown-item"
+                                               onclick="selectOptionInDropdown(this, 'bind-HOME')">RIGHT
+                                                BUTTON</a>
+                                            <a class="dropdown-item"
+                                               onclick="selectOptionInDropdown(this, 'bind-HOME')">LEFT
+                                                BUTTON</a>
+                                            <a class="dropdown-item"
+                                               onclick="selectOptionInDropdown(this, 'bind-HOME')">MINUS
+                                                BUTTON</a>
+                                            <a class="dropdown-item"
+                                               onclick="selectOptionInDropdown(this, 'bind-HOME')">PLUS
+                                                BUTTON</a>
+                                            <a class="dropdown-item"
+                                               onclick="selectOptionInDropdown(this, 'bind-HOME')">IO
+                                                BUTTON</a>
+                                            <a class="dropdown-item"
+                                               onclick="selectOptionInDropdown(this, 'bind-HOME')">TELEPHONE
+                                                BUTTON</a>
+                                            <a class="dropdown-item"
+                                               onclick="selectOptionInDropdown(this, 'bind-HOME')">BC
+                                                STALK BUTTON</a>
+                                            <a class="dropdown-item"
+                                               onclick="selectOptionInDropdown(this, 'bind-HOME')">TELEPHONE
+                                                STALK BUTTON</a>
+                                            <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item"
+                                               onclick="selectOptionInDropdown(this, 'bind-HOME')">---</a>
+                                        </div>
+                                    </div>
+                                </li>
+
+                                <li>INVOKE
+                                    <div class="btn-group">
+                                        <button type="button" id="bind-INVOKE"
+                                                class="btn app-select-dropbox dropdown-toggle" data-bs-toggle="dropdown"
+                                                aria-haspopup="true" aria-expanded="false">
+                                            ---
+                                        </button>
+                                        <div class="dropdown-menu">
+                                            <a class="dropdown-item"
+                                               onclick="selectOptionInDropdown(this, 'bind-INVOKE')">RIGHT
+                                                BUTTON</a>
+                                            <a class="dropdown-item"
+                                               onclick="selectOptionInDropdown(this, 'bind-INVOKE')">LEFT
+                                                BUTTON</a>
+                                            <a class="dropdown-item"
+                                               onclick="selectOptionInDropdown(this, 'bind-INVOKE')">MINUS
+                                                BUTTON</a>
+                                            <a class="dropdown-item"
+                                               onclick="selectOptionInDropdown(this, 'bind-INVOKE')">PLUS
+                                                BUTTON</a>
+                                            <a class="dropdown-item"
+                                               onclick="selectOptionInDropdown(this, 'bind-INVOKE')">IO
+                                                BUTTON</a>
+                                            <a class="dropdown-item"
+                                               onclick="selectOptionInDropdown(this, 'bind-INVOKE')">TELEPHONE
+                                                BUTTON</a>
+                                            <a class="dropdown-item"
+                                               onclick="selectOptionInDropdown(this, 'bind-INVOKE')">BC
+                                                STALK BUTTON</a>
+                                            <a class="dropdown-item"
+                                               onclick="selectOptionInDropdown(this, 'bind-INVOKE')">TELEPHONE
+                                                STALK BUTTON</a>
+                                            <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item"
+                                               onclick="selectOptionInDropdown(this, 'bind-INVOKE')">---</a>
+                                        </div>
+                                    </div>
+                                </li>
+
+                                <li>RESET
+                                    <div class="btn-group">
+                                        <button type="button" id="bind-RESET"
+                                                class="btn app-select-dropbox dropdown-toggle"
+                                                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            ---
+                                        </button>
+                                        <div class="dropdown-menu">
+                                            <a class="dropdown-item"
+                                               onclick="selectOptionInDropdown(this, 'bind-RESET')">RIGHT
+                                                BUTTON</a>
+                                            <a class="dropdown-item"
+                                               onclick="selectOptionInDropdown(this, 'bind-RESET')">LEFT
+                                                BUTTON</a>
+                                            <a class="dropdown-item"
+                                               onclick="selectOptionInDropdown(this, 'bind-RESET')">MINUS
+                                                BUTTON</a>
+                                            <a class="dropdown-item"
+                                               onclick="selectOptionInDropdown(this, 'bind-RESET')">PLUS
+                                                BUTTON</a>
+                                            <a class="dropdown-item"
+                                               onclick="selectOptionInDropdown(this, 'bind-RESET')">IO
+                                                BUTTON</a>
+                                            <a class="dropdown-item"
+                                               onclick="selectOptionInDropdown(this, 'bind-RESET')">TELEPHONE
+                                                BUTTON</a>
+                                            <a class="dropdown-item"
+                                               onclick="selectOptionInDropdown(this, 'bind-RESET')">BC
+                                                STALK BUTTON</a>
+                                            <a class="dropdown-item"
+                                               onclick="selectOptionInDropdown(this, 'bind-RESET')">TELEPHONE
+                                                STALK BUTTON</a>
+                                            <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item"
+                                               onclick="selectOptionInDropdown(this, 'bind-RESET')">---</a>
+                                        </div>
+                                    </div>
+                                </li>
+
+                                <li>BACK
+                                    <div class="btn-group">
+                                        <button type="button" id="bind-BACK"
+                                                class="btn app-select-dropbox dropdown-toggle"
+                                                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            ---
+                                        </button>
+                                        <div class="dropdown-menu">
+                                            <a class="dropdown-item"
+                                               onclick="selectOptionInDropdown(this, 'bind-BACK')">RIGHT
+                                                BUTTON</a>
+                                            <a class="dropdown-item"
+                                               onclick="selectOptionInDropdown(this, 'bind-BACK')">LEFT
+                                                BUTTON</a>
+                                            <a class="dropdown-item"
+                                               onclick="selectOptionInDropdown(this, 'bind-BACK')">MINUS
+                                                BUTTON</a>
+                                            <a class="dropdown-item"
+                                               onclick="selectOptionInDropdown(this, 'bind-BACK')">PLUS
+                                                BUTTON</a>
+                                            <a class="dropdown-item"
+                                               onclick="selectOptionInDropdown(this, 'bind-BACK')">IO
+                                                BUTTON</a>
+                                            <a class="dropdown-item"
+                                               onclick="selectOptionInDropdown(this, 'bind-BACK')">TELEPHONE
+                                                BUTTON</a>
+                                            <a class="dropdown-item"
+                                               onclick="selectOptionInDropdown(this, 'bind-BACK')">BC
+                                                STALK BUTTON</a>
+                                            <a class="dropdown-item"
+                                               onclick="selectOptionInDropdown(this, 'bind-BACK')">TELEPHONE
+                                                STALK BUTTON</a>
+                                            <div class="dropdown-divider"></div>
+                                            <a class="dropdown-item"
+                                               onclick="selectOptionInDropdown(this, 'bind-BACK')">---</a>
+                                        </div>
+                                    </div>
+                                </li>
+                            </form>
+                        </ul>
+                        <button type="button" class="w-100 btn btn-lg" onclick="changeMappingThenReload()">Apply</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card mb-4 rounded-3 shadow-sm card-background-blackish">
+                    <div class="card-header py-3">
+                        <h4 class="my-0 fw-normal">Channel whitelist</h4>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mt-3 mb-4">
+                            <li>Write IDs of Discord Channels would you like to see on your Cluster separated with commas. Remember that private messages are always displayed!</li>
+                            <li> </li>
+                            <div class="input-group">
+                                <textarea class="form-control form-channelList" aria-label="With textarea" id="channelIds"></textarea>
+                            </div>
+                        </ul>
+                        <button type="button" class="w-100 btn btn-lg" id="channelListButton" onclick="isValidChannelList()">Apply</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card mb-4 rounded-3 shadow-sm card-background-blackish">
+                    <div class="card-header py-3">
+                        <h4 class="my-0 fw-normal">Scrolling speed</h4>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mt-3 mb-4">
+                            <li>Select desired scrolling speed</li>
+                        </ul>
+                        <div class="btn-group">
+                            <button type="button" class="btn app-select-dropbox dropdown-toggle"
+                                    data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="scrollingSpeedDiv">
+                                Normal
+                            </button>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" onclick="selectOptionInDropdown(this, 'scrollingSpeedDiv')">Very slow</a>
+                                <a class="dropdown-item" onclick="selectOptionInDropdown(this, 'scrollingSpeedDiv')">Slow</a>
+                                <a class="dropdown-item" onclick="selectOptionInDropdown(this, 'scrollingSpeedDiv')">Normal</a>
+                                <a class="dropdown-item" onclick="selectOptionInDropdown(this, 'scrollingSpeedDiv')">Fast</a>
+                                <a class="dropdown-item" onclick="selectOptionInDropdown(this, 'scrollingSpeedDiv')">Very fast</a>
+                            </div>
+                        </div>
+                        <button type="button" class="w-100 btn btn-lg" onclick="changeSpeedThenReload()">Apply</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card mb-4 rounded-3 shadow-sm card-background-blackish">
+                    <div class="card-header py-3">
+                        <h4 class="my-0 fw-normal">Application</h4>
+                    </div>
+                    <div class="card-body">
+
+
+                        <div class="btn-group">
+                            <button type="button" class="btn app-select-dropbox dropdown-toggle" id="selectSpeed"
+                                    data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Discord
+                            </button>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item">Discord</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <footer class="pt-4 my-md-5 pt-md-5 border-top w-100">
+                <div class="row">
+                    <div class="col-12 col-md">
+                        <img class="mb-2" src="cluster.png" width="40" height="24" alt="e32 cluster icon"/>
+                        <small class="d-block mb-3">&copy; 2022-2023</small>
+                    </div>
+                </div>
+            </footer>
+        </div>
+</body>
+</html>

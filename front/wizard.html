@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <title>Cluster Manager</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+
+    <style>
+        @media (min-width: 768px) {
+        }
+    </style>
+
+    <link href="cluster.css" rel="stylesheet">
+
+    <script>
+
+        function simpleMapping() {
+            fetch('http://localhost/api/v1/alterButtonMapping', {
+                method: 'PUT',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(
+                    {
+                        "LEFT": "LEFT_BUTTON",
+                        "RIGHT": "RIGHT_BUTTON",
+                        "UP": "PLUS_BUTTON",
+                        "DOWN": "MINUS_BUTTON",
+                        "BACK": "IO_BUTTON",
+                        "INVOKE": "BC_STALK_BUTTON",
+                        "HOME": null,
+                        "OK": "TELEPHONE_BUTTON"
+                    }
+                )
+            })
+                .then(response => window.location.replace("configuration.html#"))
+        }
+
+        function advancedMapping() {
+            fetch('http://localhost/api/v1/alterButtonMapping', {
+                method: 'PUT',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(
+                    {
+                        "LEFT": "LEFT_BUTTON",
+                        "RIGHT": "RIGHT_BUTTON",
+                        "UP": "PLUS_BUTTON",
+                        "DOWN": "MINUS_BUTTON",
+                        "BACK": "IO_BUTTON",
+                        "INVOKE": null,
+                        "HOME": null,
+                        "OK": "TELEPHONE_BUTTON"
+                    }
+                )
+            })
+                .then(response => window.location.replace("configuration.html#"))
+        }
+
+
+    </script>
+
+</head>
+<body>
+
+<div class="container py-3">
+    <header>
+        <div class="d-flex flex-column flex-md-row align-items-center pb-3 mb-4 border-bottom">
+            <a href="/" class="d-flex align-items-center text-dark text-decoration-none">
+                <img src="cluster.png" width="200" height="80" alt="e32 cluster icon"/>
+            </a>
+
+            <span class="fs-4">Cluster Manager</span>
+
+            <nav class="d-inline-flex mt-2 mt-md-0 ms-md-auto">
+                <a class="me-3 py-2 text-decoration-none" href="#">Overview</a>
+                <a class="me-3 py-2 text-decoration-none" onclick="location.href = 'configuration.html';">Configuration</a>
+                <a class="py-2 text-decoration-none" onclick="location.href = 'tools.html';">Tools</a>
+            </nav>
+        </div>
+
+        <div class="pricing-header p-3 pb-md-4 mx-auto text-center">
+            <h1 class="display-4 fw-normal">Wizard</h1>
+            <p class="fs-5">Looks like it's your first time using Cluster Manager. Please tell us what input devices do
+                you have in your E34 or E32 car.</p>
+        </div>
+    </header>
+
+    <main>
+        <div class="row row-cols-1 row-cols-md-3 mb-3 text-center">
+            <div class="col">
+                <div class="card mb-4 rounded-3 shadow-sm card-background-blackish">
+                    <div class="card-header py-3">
+                        <h4 class="my-0 fw-normal">Multifunction steering wheel + BC stalk</h4>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mt-3 mb-4">
+                            <li>Use <b>←</b>, <b>→</b>, <b>+</b> and <b>-</b> for navigation</li>
+                            <li><b>R/T</b> as back button</li>
+                            <li><b>Telephone</b> as OK</li>
+                            <li><b>BC stalk</b> to switch to and off Cluster Manager context</li>
+                        </ul>
+                        <button type="button" class="w-100 btn btn-lg" onclick="simpleMapping()">Select</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card mb-4 rounded-3 shadow-sm card-background-blackish">
+                    <div class="card-header py-3">
+                        <h4 class="my-0 fw-normal">Just multifunction steering wheel</h4>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mt-3 mb-4">
+                            <li>Use <b>←</b>, <b>→</b>, <b>+</b> and <b>-</b> for navigation</li>
+                            <li><b>Telephone</b> as OK</li>
+                            <li><b>R/T</b> as Back</li>
+                            <li><b>Hold R/T</b> to switch to and off Cluster Manager context</li>
+                        </ul>
+                        <button type="button" class="w-100 btn btn-lg" onclick="advancedMapping()">Select</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card mb-4 rounded-3 shadow-sm card-background-blackish">
+                    <div class="card-header py-3">
+                        <h4 class="my-0 fw-normal">Custom configuration</h4>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mt-3 mb-4">
+                            <li>Your own button mapping</li>
+                        </ul>
+                        <button type="button" class="w-100 btn btn-lg" onclick="location.href = 'configuration.html';">Select</button>
+                    </div>
+                </div>
+            </div>
+
+            <footer class="pt-4 my-md-5 pt-md-5 border-top w-100">
+                <div class="row">
+                    <div class="col-12 col-md">
+                        <img class="mb-2" src="cluster.png" width="40" height="24" alt="e32 cluster icon"/>
+                        <small class="d-block mb-3">&copy; 2022-2023</small>
+                    </div>
+                </div>
+            </footer>
+        </div>
+</body>
+</html>

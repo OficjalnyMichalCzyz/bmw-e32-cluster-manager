@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <title>Cluster Manager</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+            crossorigin="anonymous"></script>
+    <style>
+        @media (min-width: 768px) {
+        }
+    </style>
+
+    <link href="cluster.css" rel="stylesheet">
+
+    <script src="wizardRedirect.js"></script>
+
+</head>
+
+
+<body>
+
+<div class="container py-3">
+    <header>
+        <div class="d-flex flex-column flex-md-row align-items-center pb-3 mb-4 border-bottom">
+            <a href="/" class="d-flex align-items-center text-dark text-decoration-none">
+                <img src="cluster.png" width="200" height="80" alt="e32 cluster icon"/>
+            </a>
+
+            <span class="fs-4">Cluster Manager</span>
+
+            <nav class="d-inline-flex mt-2 mt-md-0 ms-md-auto">
+                <a class="me-3 py-2 text-decoration-none" href="#">Overview</a>
+                <a class="me-3 py-2 text-decoration-none" onclick="location.href = 'configuration.html';">Configuration</a>
+                <a class="py-2 text-decoration-none" href="#">Tools</a>
+            </nav>
+        </div>
+
+        <div class="pricing-header p-3 pb-md-4 mx-auto text-center">
+            <h1 class="display-4 fw-normal">Tools</h1>
+            <p class="fs-5">Check internet connection and other services.</p>
+        </div>
+    </header>
+
+    <main>
+        <div class="row row-cols-1 row-cols-md-3 mb-3 text-center">
+            <div class="col">
+                <div class="card mb-4 rounded-3 shadow-sm card-background-blackish">
+                    <div class="card-header py-3">
+                        <h4 class="my-0 fw-normal">Internet Provider</h4>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mt-3 mb-4">
+
+                        </ul>
+                        <button type="button" class="w-100 btn btn-lg" >Apply</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card mb-4 rounded-3 shadow-sm card-background-blackish">
+                    <div class="card-header py-3">
+                        <h4 class="my-0 fw-normal">Status</h4>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mt-3 mb-4">
+                            <li>Cluster status: unknown</li>
+                            <li> </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card mb-4 rounded-3 shadow-sm card-background-blackish">
+                    <div class="card-header py-3">
+                        <h4 class="my-0 fw-normal">Restart</h4>
+                    </div>
+                    <div class="card-body">
+                        <button type="button" class="w-100 btn btn-lg">Restart device</button>
+                    </div>
+                </div>
+            </div>
+
+            <footer class="pt-4 my-md-5 pt-md-5 border-top w-100">
+                <div class="row">
+                    <div class="col-12 col-md">
+                        <img class="mb-2" src="cluster.png" width="40" height="24" alt="e32 cluster icon"/>
+                        <small class="d-block mb-3">&copy; 2022-2023</small>
+                    </div>
+                </div>
+            </footer>
+        </div>
+</body>
+</html>
