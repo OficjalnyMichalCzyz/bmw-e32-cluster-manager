@@ -113,6 +113,7 @@ class Output
         /** Has finished displaying? */
         if ($this->currentScrollingPosition === mb_strlen($this->currentMessage)) {
             $this->changeState(self::READY);
+            $this->clearScreen();
             DEBUG_logChar(PHP_EOL, null);
             return $this->currentAppState;
         }
@@ -157,8 +158,9 @@ class Output
     {
     }
 
-    public function clearScreen(): void
+    private function clearScreen(): void
     {
+        $this->outputDriver->displayMessage('');
     }
 
     public function updateLastScrollTickTime(): void
