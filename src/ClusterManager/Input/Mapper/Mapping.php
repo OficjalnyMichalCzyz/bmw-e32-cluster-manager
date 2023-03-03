@@ -14,7 +14,7 @@ class Mapping
         InputMapper::PLUS_BUTTON => InputCommand::UP,
         InputMapper::MINUS_BUTTON => InputCommand::DOWN,
         InputMapper::TELEPHONE_BUTTON => InputCommand::OK,
-        InputMapper::IO_BUTTON => InputCommand::BACK,
+        InputMapper::RT_BUTTON => InputCommand::BACK,
         InputMapper::TELEPHONE_STALK_BUTTON => InputCommand::INVOKE,
         InputMapper::BC_STALK_BUTTON => InputCommand::HOME
     ];

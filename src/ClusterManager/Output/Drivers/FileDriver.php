@@ -6,7 +6,7 @@ namespace E32CM\ClusterManager\Output\Drivers;
 
 class FileDriver implements OutputDriver
 {
-    private const MESSAGE_FILE = 'message.txt';
+    private const MESSAGE_FILE = 'VirtualLCD.txt';
     private const SELECTION_CONTEXT_FILE = 'context.txt';
 
     public function displayMessage(string $message): void

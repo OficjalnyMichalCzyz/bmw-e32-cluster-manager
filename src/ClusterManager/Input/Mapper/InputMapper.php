@@ -12,7 +12,7 @@ class InputMapper
     public const BC_STALK_BUTTON = 'BC_STALK_BUTTON';
     public const TELEPHONE_STALK_BUTTON = 'TELEPHONE_STALK_BUTTON';
     public const TELEPHONE_BUTTON = 'TELEPHONE_BUTTON';
-    public const IO_BUTTON = 'IO_BUTTON';
+    public const RT_BUTTON = 'RT_BUTTON';
     public const PLUS_BUTTON = 'PLUS_BUTTON';
     public const MINUS_BUTTON = 'MINUS_BUTTON';
     public const LEFT_BUTTON = 'LEFT_BUTTON';
@@ -22,7 +22,7 @@ class InputMapper
         self::BC_STALK_BUTTON,
         self::TELEPHONE_STALK_BUTTON,
         self::TELEPHONE_BUTTON,
-        self::IO_BUTTON,
+        self::RT_BUTTON,
         self::PLUS_BUTTON,
         self::MINUS_BUTTON,
         self::LEFT_BUTTON,
