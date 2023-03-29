@@ -9,7 +9,7 @@ namespace E32CM\ClusterManager\Main\ClusterApplications\Discord\Configuration;
  */
 class DiscordConfiguration implements \JsonSerializable
 {
-    private string $token;  //MzI3MTM4ODc0OTgxNzQ0NjQw.GwPYT9.oks-lG0-vSAPd2BJ1JYwAMFRE4RdyUYDHc8YpQ
+    private string $token;
     private ?string $login;
     private ?string $password;
     private array $channelWhitelist;

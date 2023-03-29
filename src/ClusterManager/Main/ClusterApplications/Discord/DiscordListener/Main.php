@@ -11,6 +11,8 @@ use Discord\WebSockets\Intents;
 use E32CM\ClusterManager\Main\ClusterApplications\Discord\Configuration\Repository\Repository as ConfigurationProvider;
 use E32CM\ClusterManager\Main\ClusterApplications\Discord\DiscordListener\Message\Dto\Message;
 use E32CM\ClusterManager\Main\ClusterApplications\Discord\DiscordListener\Message\Queue\MessageQueue;
+use Exception;
+use Psr\Log\NullLogger;
 
 class Main
 {
@@ -32,11 +34,19 @@ class Main
 
     public function run()
     {
-        $token = $this->configurationProvider->getUserConfiguration()->retrieveConfiguration()['token'];
+        $configuration =  $this->configurationProvider->getUserConfiguration();
+
+        if ($configuration->retrieveConfiguration()['token'] === '') {
+            throw new Exception('No token set! Configure ClusterManager before using it!');
+        }
+
+        $token = $configuration->retrieveConfiguration()['token'];
+        $this->allowedChannels = $configuration->retrieveConfiguration()['channelWhitelist'];
 
         $this->discord = new Discord([
             'token' => $token,
             'intents' => Intents::getDefaultIntents() | Intents::MESSAGE_CONTENT,
+            'logger' => new NullLogger()
         ]);
 
         $this->discord->on('ready', function (Discord $discord) {
@@ -63,6 +73,7 @@ class Main
                         null
                     )
                 );
+                echo($message->author->displayname. ': ' . $message->content . PHP_EOL);
             });
         });
         $this->discord->run();

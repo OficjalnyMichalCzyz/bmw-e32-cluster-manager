@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 namespace E32CM\ClusterManager\Main\ClusterApplications\Discord;
 
+use Doctrine\DBAL\Exception;
 use E32CM\ClusterManager\Input\InputCommand;
 use E32CM\ClusterManager\Main\ApplicationCommand\Commands\ApplicationCommand;
 use E32CM\ClusterManager\Main\ApplicationCommand\Commands\DisplayMessageCommand;
 use E32CM\ClusterManager\Main\ApplicationCommand\Commands\SkipMessageCommand;
 use E32CM\ClusterManager\Main\ApplicationCommand\Commands\IdleCommand;
 use E32CM\ClusterManager\Main\ClusterApplications\ClusterApplication;
+use E32CM\ClusterManager\Main\ClusterApplications\Discord\Configuration\DiscordConfiguration;
+use E32CM\ClusterManager\Main\ClusterApplications\Discord\Configuration\Repository\RepositoryBasedOnMySql as ConfigurationRepository;
 use E32CM\ClusterManager\Main\ClusterApplications\Discord\DiscordListener\Message\Consumer\MessageConsumer;
 use E32CM\ClusterManager\Main\ClusterApplications\Discord\DiscordListener\Message\Dto\Message;
 use E32CM\ClusterManager\Main\ClusterApplications\Discord\DiscordListener\Message\Exception\NoMessagesException;
@@ -20,17 +23,14 @@ class Discord implements ClusterApplication
 {
     public const APP_NAME = 'DISCORD';
 
-    public const LIST_OF_STATES = [
-
-    ];
-
-    public array $allowedChannels = [608235465639854080, 1071828905322893382];
-
     public const USING_OUTPUT = 'USING_OUTPUT';
     public const WAITING = 'WAITING';
     public const READY = 'READY';
+    public const CONFIGURE = 'CONFIGURE';
 
     private MessageConsumer $messageConsumer;
+
+    private DiscordConfiguration $configuration;
 
     private string $currentAppState = self::READY;
     private string $lastKnownOutputState = 'UNKNOWN';
@@ -39,9 +39,14 @@ class Discord implements ClusterApplication
     private ?string $lastChannelContext = null;
     private ?string $lastUserContext = null;
 
-    public function __construct(MessageConsumer $messageConsumer)
+    public function __construct(MessageConsumer $messageConsumer, ConfigurationRepository $configurationRepository)
     {
         $this->messageConsumer = $messageConsumer;
+        try {
+            $this->configuration = $configurationRepository->getUserConfiguration();
+        } catch (Exception $e) {
+            $this->currentAppState = self::CONFIGURE;
+        }
     }
 
     public function configure(AppConfiguration $configuration): void
@@ -52,19 +57,10 @@ class Discord implements ClusterApplication
     public function processCommand(InputCommand $command): ApplicationCommand
     {
         if ($this() === self::USING_OUTPUT && $command->getCommand() === InputCommand::OK) {
-            //Skip current message on screen
-        //    try {
-      //          return $this->displayNextDiscordMessage();
-         //   } catch (NoMessagesException $exception) {
                 return SkipMessageCommand::create();
-       //     }
         }
 
-        return DisplayMessageCommand::createWithMessageAndScrollSpeed(
-            'Idle Idle Idle Idle Idle Idle Idle Idle Idle Idle',
-            Output::VERY_SLOW_SCROLLING,
-            DisplayMessageCommand::QUEUE_DISPLAY
-        );
+        return IdleCommand::create();
     }
 
     private function displayNextDiscordMessage(bool $forceDisplay = false): ApplicationCommand
@@ -79,7 +75,7 @@ class Discord implements ClusterApplication
 
         return DisplayMessageCommand::createWithMessageAndScrollSpeed(
             $outputMessage,
-            Output::VERY_FAST_SCROLLING,
+            $this->configuration->getScrollSpeed(),
             ($forceDisplay ? DisplayMessageCommand::FORCE_DISPLAY : DisplayMessageCommand::QUEUE_DISPLAY)
         );
     }
@@ -151,6 +147,14 @@ class Discord implements ClusterApplication
 
     public function tick(string $lastOutputStatus): ApplicationCommand
     {
+        if ($this() === self::CONFIGURE) {
+            return DisplayMessageCommand::createWithMessageAndScrollSpeed(
+                '  NO CONFIG SET ',
+                Output::NO_SCROLLING,
+                DisplayMessageCommand::FORCE_DISPLAY
+            );
+        }
+
         if ($this->lastKnownOutputState !== $lastOutputStatus) {
             $this->lastKnownOutputState = $lastOutputStatus;
             \E32CM\log('==========================================================');

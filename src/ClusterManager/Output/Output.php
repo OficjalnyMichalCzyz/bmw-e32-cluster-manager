@@ -9,8 +9,6 @@ use E32CM\ClusterManager\Output\Drivers\OutputDriver;
 use E32CM\ClusterManager\Output\Exception\InvalidScrollModeException;
 use E32CM\ClusterManager\Output\Exception\NoMessageToDisplayException;
 
-use function E32CM\DEBUG_logChar;
-
 /**
  * ALL output drivers assume having only 16 characters capable of being displayed at the same time
  * because that is how many does E34/E32 cluster has
@@ -72,6 +70,12 @@ class Output
             throw InvalidScrollModeException::createWithInvalidScrollMode($scrollMode);
         }
 
+        if ($scrollMode === self::NO_SCROLLING) {
+            $this->outputDriver->displayMessage($message);
+            sleep(10);
+            return;
+        }
+
         if ($displayMode === DisplayMessageCommand::FORCE_DISPLAY) {
             $this->displayQueue = [];
             $this->currentMessage = $message;
@@ -90,6 +94,7 @@ class Output
         $this->currentMessage = null;
         $this->currentScrollingSpeed = self::NO_SCROLLING;
         $this->currentScrollingPosition = 0;
+        $this->clearScreen();
         $this->changeState(self::READY);
     }
 
@@ -114,7 +119,6 @@ class Output
         if ($this->currentScrollingPosition === mb_strlen($this->currentMessage)) {
             $this->changeState(self::READY);
             $this->clearScreen();
-            DEBUG_logChar(PHP_EOL, null);
             return $this->currentAppState;
         }
 
@@ -124,7 +128,6 @@ class Output
         $this->outputDriver->displayMessage($finalMessage);
         $this->currentScrollingPosition += 1;
         $this->updateLastScrollTickTime();
-        DEBUG_logChar($this->currentMessage, $this->currentScrollingPosition);
         return $this->currentAppState;
     }
 
@@ -160,7 +163,7 @@ class Output
 
     private function clearScreen(): void
     {
-        $this->outputDriver->displayMessage('');
+        $this->outputDriver->displayMessage(' ');
     }
 
     public function updateLastScrollTickTime(): void

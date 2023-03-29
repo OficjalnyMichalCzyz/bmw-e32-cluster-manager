@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace E32CM\ClusterManager\Main\ClusterApplications\Discord\Configuration\Repository;
 
+use Doctrine\DBAL\Exception;
 use Doctrine\ORM\EntityManagerInterface;
 use E32CM\ClusterManager\Main\ClusterApplications\Discord\Configuration\DiscordConfiguration;
 use E32CM\ClusterManager\Main\ClusterApplications\Discord\Discord;
@@ -12,14 +13,14 @@ class RepositoryBasedOnMySql implements Repository
 {
     private EntityManagerInterface $entityManager;
 
-    /**
-     * @param EntityManagerInterface $entityManager
-     */
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
     }
 
+    /**
+     * @throws Exception
+     */
     public function getUserConfiguration(): DiscordConfiguration
     {
         $connection = $this->entityManager->getConnection();
@@ -32,14 +33,22 @@ class RepositoryBasedOnMySql implements Repository
         $query->bindValue(1, Discord::APP_NAME);
         $rawResult = $query->executeQuery()->fetchAssociative();
 
+        if (!$rawResult) {
+            throw new Exception('No configuration found!');
+        }
+
+        if (!isset($rawResult['config'])) {
+            throw new Exception('Malformed configuration!');
+        }
+
         $config = json_decode($rawResult['config'], true);
 
         return new DiscordConfiguration(
-            $config['token'],
-            $config['login'],
-            $config['password'],
-            $config['channelWhitelist'],
-            $config['scrollSpeed'],
+            $config['token'] ?? '',
+            $config['login'] ?? '',
+            $config['password'] ?? '',
+            $config['channelWhitelist'] ?? [],
+            $config['scrollSpeed'] ?? '',
         );
     }
 

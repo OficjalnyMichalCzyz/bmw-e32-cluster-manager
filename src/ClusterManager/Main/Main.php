@@ -30,7 +30,6 @@ class Main
 
     public function run(): void
     {
-     //   $outputInstruction = null;
         while (true) {
             usleep(100000);
             try {

@@ -50,3 +50,17 @@ changeScrollSpeed:
     path: /api/v1/changeScrollSpeed
     controller: E32CM\Api\DiscordScrollSpeed\Controllers\ChangeScrollSpeed::run
     methods: PUT
+
+#=======================================================================#
+#===========================   Discordtoken   ==========================#
+#=======================================================================#
+
+getDiscordToken:
+    path: /api/v1/getDiscordToken
+    controller: E32CM\Api\DiscordToken\Controllers\GetDiscordToken::run
+    methods: GET
+
+setDiscordToken:
+    path: /api/v1/setDiscordToken
+    controller: E32CM\Api\DiscordToken\Controllers\SetDiscordToken::run
+    methods: PUT

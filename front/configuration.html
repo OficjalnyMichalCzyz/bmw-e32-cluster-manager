@@ -96,6 +96,19 @@
         })
         .catch(error => console.error(error));
 
+    fetch('http://localhost/api/v1/getDiscordToken')
+        .then(response => {
+            if (response.status === 404) {
+
+            } else if (response.status === 200) {
+                response.json().then(data => {
+                    console.log(data)
+                    document.getElementById("token").innerText = data['token'];
+                });
+            }
+        })
+        .catch(error => console.error(error));
+
     fetch('http://localhost/api/v1/getScrollSpeed')
         .then(response => {
             if (response.status === 404) {
@@ -127,6 +140,20 @@
             .then(response => console.log(response.status))
     }
 
+    function changeToken(changeToken) {
+        fetch('http://localhost/api/v1/setDiscordToken', {
+            method: 'PUT',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(
+                [changeToken]
+            )
+        })
+            .then(response => console.log(response.status))
+    }
+
     function getMapOrGetNull(divId) {
         let div = document.getElementById(divId).innerText;
         if (div === "---") {
@@ -147,6 +174,18 @@
             changeChannelWhitelist(channelList.split(','))
         } else {
             document.getElementById("channelListButton").style.color = 'red';
+        }
+    }
+
+    function isValidToken() {
+        let token = document.getElementById("token").value;
+        const isValidMFA = /mfa\.[\w-]{84}/.test(token);
+        const isValidNonMFA = /[\w-]{24}\.[\w-]{6}\.[\w-]{27}/.test(token);
+        if (isValidMFA || isValidNonMFA) {
+            document.getElementById("tokenButton").style.color = '#ff9000';
+            changeToken(token)
+        } else {
+            document.getElementById("tokenButton").style.color = 'red';
         }
     }
 
@@ -523,6 +562,23 @@
                             </form>
                         </ul>
                         <button type="button" class="w-100 btn btn-lg" onclick="changeMappingThenReload()">Apply</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card mb-4 rounded-3 shadow-sm card-background-blackish">
+                    <div class="card-header py-3">
+                        <h4 class="my-0 fw-normal">Discord token</h4>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mt-3 mb-4">
+                            <li>Copy & paste here your Discord login token. It is needed to log in as you in the app!</li>
+                            <li> </li>
+                            <div class="input-group">
+                                <textarea class="form-control form-channelList" aria-label="With textarea" id="token"></textarea>
+                            </div>
+                        </ul>
+                        <button type="button" class="w-100 btn btn-lg" id="tokenButton" onclick="isValidToken()">Apply</button>
                     </div>
                 </div>
             </div>

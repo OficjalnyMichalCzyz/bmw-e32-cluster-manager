@@ -32,6 +32,9 @@ services:
     E32CM\ClusterManager\Main\ClusterApplications\Discord\DiscordListener\Message\Queue\MessageQueue:
         '@E32CM\ClusterManager\Main\ClusterApplications\Discord\DiscordListener\Message\Queue\MessageQueueBasedOnMysql'
 
+    E32CM\ClusterManager\Main\ClusterApplications\Discord\Discord:
+        ~
+
     GuzzleHttp\Client:
         ~
 

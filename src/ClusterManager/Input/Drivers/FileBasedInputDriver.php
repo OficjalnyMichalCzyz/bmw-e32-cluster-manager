@@ -10,11 +10,13 @@ class FileBasedInputDriver implements InputDriver
 {
     public function readInput(): ?ButtonPress
     {
-        $fileContent = trim(file_get_contents('input.txt'));
+        $fileContent = trim(file_get_contents('VirtualIbus.txt'));
 
         if (mb_strlen($fileContent) === 0) {
             return null;
         }
+
+        file_put_contents('VirtualIbus.txt', '');
 
         return new ButtonPress($fileContent, self::class);
     }
