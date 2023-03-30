@@ -28,6 +28,7 @@ class DiscordListenerCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
+        $output->writeln('Started!');
         $main = new Main($this->configRepository, $this->messageQueue);
         $main->run();
 

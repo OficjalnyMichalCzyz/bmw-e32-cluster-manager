@@ -51,10 +51,11 @@ class Main
 
         $this->discord->on('ready', function (Discord $discord) {
             $discord->on(Event::MESSAGE_CREATE, function (DiscordMessage $message, Discord $discord) {
-                /** no channel = private message */
-                $isPrivateMessage = !isset($message->channel);
+                /** no guild = private message */
+                $isPrivateMessage = ($message->guild === null);
 
                 if (!$isPrivateMessage) {
+
                     if (!in_array($message->channel->id, $this->allowedChannels)) {
                         return;
                     }

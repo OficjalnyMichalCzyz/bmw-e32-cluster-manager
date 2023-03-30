@@ -6,4 +6,5 @@ php bin/console doctrine:migrations:migrate
 
 make some php server to use "public" folder as its root (can be XAMPP)
 
-open wizard.html in front folder
+open wizard.html in front folder, configure app then run .\run in parent directory
+and enjoy "emulated" cluster
