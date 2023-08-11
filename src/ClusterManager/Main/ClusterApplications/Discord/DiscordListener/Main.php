@@ -50,18 +50,24 @@ class Main
         ]);
 
         $this->discord->on('ready', function (Discord $discord) {
-            $discord->on(Event::MESSAGE_CREATE, function (DiscordMessage $message, Discord $discord) {
+            $discord->on(Event::MESSAGE_CREATE,
+                function (DiscordMessage $message, Discord $discord) {
                 /** no guild = private message */
                 $isPrivateMessage = ($message->guild === null);
 
                 if (!$isPrivateMessage) {
 
-                    if (!in_array($message->channel->id, $this->allowedChannels)) {
+                    if (!in_array(
+                        $message->channel->id,
+                        $this->allowedChannels))
+                    {
                         return;
                     }
                 }
 
-                /** Add strategy for image/files handling to inform user that SOMETHING was sent? */
+                /** Add strategy for image/files handling
+                 * to inform user that SOMETHING was sent?
+                 */
                 $this->messageQueue->addToQueue(
                     new Message(
                         null,
@@ -74,7 +80,8 @@ class Main
                         null
                     )
                 );
-                echo($message->author->displayname. ': ' . $message->content . PHP_EOL);
+                echo($message->author->displayname. ': '
+                    . $message->content . PHP_EOL);
             });
         });
         $this->discord->run();

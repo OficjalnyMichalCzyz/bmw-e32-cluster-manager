@@ -40,14 +40,22 @@ class Main
             }
 
             if ($inputCommand === null) {
-                $outputInstruction = $this->clusterApplication->tick($this->lastOutputStatus);
+                $outputInstruction = $this->clusterApplication->tick(
+                    $this->lastOutputStatus
+                );
             } else {
-                $outputInstruction = $this->clusterApplication->processCommand($inputCommand);
+                $outputInstruction = $this->clusterApplication->processCommand(
+                    $inputCommand
+                );
             }
 
             if ($outputInstruction instanceof DisplayMessageCommand) {
                 try {
-                    $this->output->displayMessage($outputInstruction->getMessage(), $outputInstruction->getScrollSpeed(), $outputInstruction->getDisplayMode());
+                    $this->output->displayMessage(
+                        $outputInstruction->getMessage(),
+                        $outputInstruction->getScrollSpeed(),
+                        $outputInstruction->getDisplayMode()
+                    );
                     $this->lastOutputStatus = $this->output->tick();
                 } catch (\Exception $exception) {
                     echo $exception->getMessage();
@@ -71,18 +79,7 @@ class Main
                 } catch (\Exception $exception) {
                     echo $exception->getMessage();
                 }
-                continue;
             }
-
-
-            //try {
-            //    $this->output->displayMessage("ABC", 0);
-            //} catch (\Exception $exception) {
-            //
-            //}
-
-
-
         }
     }
 

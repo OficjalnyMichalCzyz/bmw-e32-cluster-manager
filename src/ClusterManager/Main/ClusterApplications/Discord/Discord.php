@@ -49,14 +49,22 @@ class Discord implements ClusterApplication
         }
     }
 
+    /**
+     * @throws \Exception
+     */
     public function configure(AppConfiguration $configuration): void
     {
-        // TODO: Implement configure() method.
+        if (!$configuration instanceof DiscordConfiguration) {
+            throw new \Exception('Invalid configuration class passed!');
+        }
+        $this->configuration = $configuration;
     }
 
     public function processCommand(InputCommand $command): ApplicationCommand
     {
-        if ($this() === self::USING_OUTPUT && $command->getCommand() === InputCommand::OK) {
+        if ($this() === self::USING_OUTPUT
+            && $command->getCommand() === InputCommand::OK)
+        {
                 return SkipMessageCommand::create();
         }
 
@@ -158,14 +166,15 @@ class Discord implements ClusterApplication
         if ($this->lastKnownOutputState !== $lastOutputStatus) {
             $this->lastKnownOutputState = $lastOutputStatus;
             \E32CM\log('==========================================================');
-            \E32CM\log('Discord detected that output is ' . $lastOutputStatus . '! (MEM: ' . memory_get_peak_usage() . ')');
+            \E32CM\log('Discord detected that output is '
+                . $lastOutputStatus . '! (MEM: ' . memory_get_peak_usage() . ')');
         }
 
         if ($lastOutputStatus === Output::READY) {
             try {
                 return $this->displayNextDiscordMessage();
             } catch (NoMessagesException $exception) {
-
+                $this->currentAppState = self::WAITING;
             }
         }
 

@@ -29,6 +29,8 @@ class Output
         self::PRESENTATION_SCROLLING
     ];
 
+    private OutputDriver $outputDriver;
+
     /** every 1000 secs */
     public const NO_SCROLLING = 'NO_SCROLLING';
     /** every 2 secs */
@@ -45,7 +47,7 @@ class Output
     public const PRESENTATION_SCROLLING = 'PRESENTATION_SCROLLING';
 
 
-    private OutputDriver $outputDriver;
+
 
     private float $lastScrollTickTime;
 

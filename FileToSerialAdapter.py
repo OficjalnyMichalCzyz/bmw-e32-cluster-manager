@@ -14,7 +14,7 @@ ser = serial.Serial(
 if ser.isOpen():
     print(ser.name + ' is open...')
 
-value = "AAAAAAAAAAAAAAAA"
+value = "                "
 
 while True:  # value > -1 and value < 10:
     print(value.ljust(16, ' ').encode('utf-8'))

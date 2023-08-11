@@ -14,13 +14,10 @@ class Input
 
     private InputMapper $inputMapper;
 
-    private MappingProvider $mappingProvider;
-
     public function __construct(InputDriver $inputDriver, MappingProvider $mappingProvider)
     {
         $this->inputDriver = $inputDriver;
-        $this->mappingProvider = $mappingProvider;
-        $this->inputMapper = new InputMapper();
+        $this->inputMapper = InputMapper::createWithMapping($mappingProvider->retrieveUserSetMapping());
     }
 
     public function getInputIfAny(): ?InputCommand

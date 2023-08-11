@@ -21,15 +21,16 @@ class SerialDriver implements OutputDriver
 
     public function displayMessage(string $message): void
     {
-        //str_pad($message, 16
-        $this->phpSerial->sendMessage("ABCDEFGHIJ123456", 0);
+        $this->phpSerial->sendMessage($message, 0);
     }
 
     public function displaySelectionContext(string $context): void
     {
+
     }
 
     public function clearScreen(): void
     {
+        $this->phpSerial->sendMessage("               ", 0);
     }
 }
