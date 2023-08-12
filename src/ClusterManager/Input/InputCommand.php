@@ -43,7 +43,7 @@ class InputCommand
     public static function createWithCommand(string $command): self
     {
         if (!in_array($command, self::POSSIBLE_COMMANDS)) {
-            throw new \Exception("123");
+            throw new \Exception("Tried to create inputCommand with unknown command!");
         }
 
         return new self($command);
