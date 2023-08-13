@@ -1,11 +1,10 @@
 <?php
 
-namespace E32CM\Api\DiscordToken\Controllers;
+namespace E32CM\Api\DiscordToken\UseCase\Command\SetDiscordToken;
 
 use E32CM\ClusterManager\Main\ClusterApplications\Discord\Configuration\Repository\RepositoryBasedOnMySql as ConfigurationRepository;
-use Symfony\Component\HttpFoundation\Response;
 
-final class GetDiscordToken extends HttpController
+final class Handler
 {
     private ConfigurationRepository $configurationRepository;
 
@@ -14,16 +13,10 @@ final class GetDiscordToken extends HttpController
         $this->configurationRepository = $configurationRepository;
     }
 
-    public function run(): Response
+    public function handle(Command $command): void
     {
         $configuration = $this->configurationRepository->getUserConfiguration();
-
-        $token = $configuration->getToken();
-        return $this->createResponse(
-            200,
-            json_encode(
-                ['token' => $token]
-            )
-        );
+        $configuration->setToken($command->getToken());
+        $this->configurationRepository->saveConfiguration($configuration);
     }
 }

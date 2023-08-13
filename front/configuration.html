@@ -77,7 +77,9 @@
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(
-                [selectedSpeed.toUpperCase().replaceAll(' ', '_')+"_SCROLLING"]
+                {
+                    scrollingSpeed: selectedSpeed.toUpperCase().replaceAll(' ', '_') + "_SCROLLING"
+                }
             )
         })
             .then(response => console.log(response.status))
@@ -148,7 +150,7 @@
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(
-                [changeToken]
+                {token: changeToken}
             )
         })
             .then(response => console.log(response.status))

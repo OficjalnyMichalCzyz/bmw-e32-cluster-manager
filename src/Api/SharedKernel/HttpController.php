@@ -1,6 +1,6 @@
 <?php
 
-namespace E32CM\Api\DiscordToken\Controllers;
+namespace E32CM\Api\SharedKernel;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;

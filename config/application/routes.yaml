@@ -5,17 +5,17 @@
 
 getButtonMapping:
     path: /api/v1/getButtonMapping
-    controller: E32CM\Api\ButtonMapping\Controllers\GetButtonMapping::run
+    controller: E32CM\Api\ButtonMapping\Controller::getButtonMapping
     methods: GET
 
 getPossibleInputsAndCommands:
     path: /api/v1/getPossibleInputsAndCommands
-    controller: E32CM\Api\ButtonMapping\Controllers\GetPossibleInputsAndCommands::run
+    controller: E32CM\Api\ButtonMapping\Controller::getPossibleInputsAndCommands
     methods: GET
 
 alterButtonMapping:
     path: /api/v1/alterButtonMapping
-    controller: E32CM\Api\ButtonMapping\Controllers\AlterButtonMapping::run
+    controller: E32CM\Api\ButtonMapping\Controller::alterButtonMapping
     methods: PUT
 
 #=======================================================================#
@@ -24,12 +24,12 @@ alterButtonMapping:
 
 getChannelWhitelist:
     path: /api/v1/getChannelWhitelist
-    controller: E32CM\Api\DiscordChannelWhitelist\Controllers\GetChannelWhitelist::run
+    controller: E32CM\Api\DiscordChannelWhitelist\Controller::getChannelWhitelist
     methods: GET
 
 changeChannelWhitelist:
     path: /api/v1/changeChannelWhitelist
-    controller: E32CM\Api\DiscordChannelWhitelist\Controllers\ChangeChannelWhitelist::run
+    controller: E32CM\Api\DiscordChannelWhitelist\Controller::changeChannelWhitelist
     methods: PUT
 
 #=======================================================================#
@@ -38,17 +38,17 @@ changeChannelWhitelist:
 
 getScrollSpeed:
     path: /api/v1/getScrollSpeed
-    controller: E32CM\Api\DiscordScrollSpeed\Controllers\GetScrollSpeed::run
+    controller: E32CM\Api\DiscordScrollSpeed\Controller::getScrollSpeed
     methods: GET
 
 getPossibleScrollSpeeds:
     path: /api/v1/getPossibleScrollSpeeds
-    controller: E32CM\Api\DiscordScrollSpeed\Controllers\GetPossibleScrollSpeeds::run
+    controller: E32CM\Api\DiscordScrollSpeed\Controller::getPossibleScrollSpeeds
     methods: GET
 
 changeScrollSpeed:
     path: /api/v1/changeScrollSpeed
-    controller: E32CM\Api\DiscordScrollSpeed\Controllers\ChangeScrollSpeed::run
+    controller: E32CM\Api\DiscordScrollSpeed\Controller::changeScrollSpeed
     methods: PUT
 
 #=======================================================================#
@@ -57,10 +57,10 @@ changeScrollSpeed:
 
 getDiscordToken:
     path: /api/v1/getDiscordToken
-    controller: E32CM\Api\DiscordToken\Controllers\GetDiscordToken::run
+    controller: E32CM\Api\DiscordToken\Controller::getDiscordToken
     methods: GET
 
 setDiscordToken:
     path: /api/v1/setDiscordToken
-    controller: E32CM\Api\DiscordToken\Controllers\SetDiscordToken::run
+    controller: E32CM\Api\DiscordToken\Controller::getDiscordToken
     methods: PUT

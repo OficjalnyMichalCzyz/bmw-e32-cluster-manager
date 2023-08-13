@@ -1,12 +1,10 @@
 <?php
 
-namespace E32CM\Api\DiscordToken\Controllers;
+namespace E32CM\Api\DiscordScrollSpeed\UseCase\Command\ChangeScrollSpeed;
 
 use E32CM\ClusterManager\Main\ClusterApplications\Discord\Configuration\Repository\RepositoryBasedOnMySql as ConfigurationRepository;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
-final class SetDiscordToken extends HttpController
+final class Handler
 {
     private ConfigurationRepository $configurationRepository;
 
@@ -15,13 +13,10 @@ final class SetDiscordToken extends HttpController
         $this->configurationRepository = $configurationRepository;
     }
 
-    public function run(Request $request): Response
+    public function handle(Command $command): void
     {
-        $requestData = $this->extractJsonDataFromRequest($request);
         $configuration = $this->configurationRepository->getUserConfiguration();
-        $configuration->setToken($requestData[0]);
+        $configuration->setScrollSpeed($command->getScrollSpeed());
         $this->configurationRepository->saveConfiguration($configuration);
-
-        return $this->createOkResponse();
     }
 }
